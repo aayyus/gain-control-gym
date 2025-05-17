@@ -9,7 +9,152 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      attendance: {
+        Row: {
+          check_in: string | null
+          check_out: string | null
+          created_at: string | null
+          id: string
+          member_id: string | null
+        }
+        Insert: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string | null
+          id?: string
+          member_id?: string | null
+        }
+        Update: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string | null
+          id?: string
+          member_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      members: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          email: string | null
+          expiry_date: string | null
+          id: string
+          join_date: string | null
+          membership_type_id: string | null
+          phone: string | null
+          profile_id: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
+          expiry_date?: string | null
+          id?: string
+          join_date?: string | null
+          membership_type_id?: string | null
+          phone?: string | null
+          profile_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
+          expiry_date?: string | null
+          id?: string
+          join_date?: string | null
+          membership_type_id?: string | null
+          phone?: string | null
+          profile_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_membership_type_id_fkey"
+            columns: ["membership_type_id"]
+            isOneToOne: false
+            referencedRelation: "membership_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_types: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_days: number
+          id: string
+          name: string
+          price: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_days: number
+          id?: string
+          name: string
+          price: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_days?: number
+          id?: string
+          name?: string
+          price?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          role: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          role?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
