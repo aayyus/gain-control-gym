@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,16 +43,8 @@ const LoginForm = () => {
       
       if (error) throw error;
       
-      // Create profile record
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            { id: data.user.id, full_name: fullName }
-          ]);
-        
-        if (profileError) throw profileError;
-      }
+      // Profile record is now created automatically by the database trigger
+      // No need to manually create it here
       
       toast.success("Account created successfully! You can now log in.");
       setIsSignUp(false);
