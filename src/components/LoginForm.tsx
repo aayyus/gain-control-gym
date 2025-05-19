@@ -1,13 +1,32 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
+// Helper function to clean up auth state
+const cleanupAuthState = () => {
+  // Remove all Supabase auth keys from localStorage
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+      localStorage.removeItem(key);
+    }
+  });
+  
+  // Remove from sessionStorage if in use
+  Object.keys(sessionStorage || {}).forEach((key) => {
+    if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+      sessionStorage.removeItem(key);
+    }
+  });
+};
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -30,7 +49,17 @@ const LoginForm = () => {
     e.preventDefault();
     setIsLoggingIn(true);
     
+    // Clean up existing auth state before signing up
+    cleanupAuthState();
+    
     try {
+      // Try global signout first
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+      
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -59,7 +88,17 @@ const LoginForm = () => {
     e.preventDefault();
     setIsLoggingIn(true);
     
+    // Clean up existing auth state before login
+    cleanupAuthState();
+    
     try {
+      // Try global signout first
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -69,10 +108,8 @@ const LoginForm = () => {
       
       toast.success("Login successful! Redirecting to dashboard...");
       
-      // Wait a bit to show the toast before redirecting
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
+      // Use full page refresh for reliable state reset
+      window.location.href = "/dashboard";
     } catch (error: any) {
       toast.error(error.message || "Error during login");
       setIsLoggingIn(false);
